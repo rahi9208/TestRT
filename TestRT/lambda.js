@@ -4,6 +4,7 @@ const ddb = new AWS.DynamoDB.DocumentClient();
 let validatejs = require("validate.js");
 exports.handler = function (event, context, callback) {
 
+	//using validate.js : 3rd party LIBS
 	let validation = validatejs(event, {
 		itemCode: { presence: true },
 		price: { numericality: true, presence: true }
@@ -15,17 +16,19 @@ exports.handler = function (event, context, callback) {
 
 	let image = Buffer.from(event.image, "base64");
 
-
+	//DyanamoDB Demo
 	ddb.put({
 		TableName: 'TestRT',
 		Item: { 'itemCode': event.itemCode, 'name': event.name, 'itemType': event.type, 'price': event.price }
 	}, function (err, data) {
 
 		if (!err) {
+			let fileName = event.itemCode + ".jpg";
+			//S3 Demo
 			s3.putObject({
 				"Body": image,
 				"Bucket": "testxyz.abc.slapp.food",
-				"Key": event.itemCode,
+				"Key": fileName,
 				"ACL": "public-read"
 			})
 				.promise()
