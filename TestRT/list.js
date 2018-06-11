@@ -22,12 +22,14 @@ exports.handler = function (event, context, callback) {
 		FilterExpression: 'itemType = :queryType'
 	}, function (err, data) {
 		if (data.Items) {
-			callback(err, data.Items.map(item => {
+			response.body = JSON.stringify(data.Items.map(item => {
 				item.image = "https://s3.amazonaws.com/" + process.env["IMAGE_BUCKET"] + "/" + item.itemCode + ".jpg";
 				return item;
 			}));
+			callback(null, response);
 		} else {
-			callback(err, null);
+			response.statusCode = 500;
+			callback(response, null);
 		}
 	});
 

@@ -4,7 +4,7 @@ const ddb = new AWS.DynamoDB.DocumentClient();
 let validatejs = require("validate.js");
 exports.handler = function (event, context, callback) {
 
-	//using validate.js : 3rd party LIBS
+	//using validate.js : Demo 3rd party LIBS
 	let validation = validatejs(event, {
 		itemCode: { presence: true },
 		price: { numericality: true, presence: true }
