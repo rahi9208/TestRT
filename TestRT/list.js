@@ -14,7 +14,6 @@ exports.handler = function (event, context, callback) {
 
 	let queryType = event.queryStringParameters.type;
 
-
 	ddb.scan({
 		TableName: 'TestRT',
 		ExpressionAttributeValues: {
