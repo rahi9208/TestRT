@@ -13,6 +13,7 @@ exports.handler = function (event, context, callback) {
 	};
 
 	let queryType = event.queryStringParameters.type;
+	let language = event.queryStringParameters.lan;
 
 	ddb.scan({
 		TableName: 'TestRT',
@@ -24,11 +25,13 @@ exports.handler = function (event, context, callback) {
 		if (data.Items) {
 			response.body = JSON.stringify(await Promise.all(data.Items.map(async (item) => {
 				item.image = "https://s3.amazonaws.com/" + process.env["IMAGE_BUCKET"] + "/" + item.itemCode + ".jpg";
-				item.name = (await tl.translateText({
-					SourceLanguageCode: "en",
-					TargetLanguageCode: "fr",
-					Text: item.name
-				}).promise()).TranslatedText;
+				if (language) {
+					item.name = (await tl.translateText({
+						SourceLanguageCode: "en",
+						TargetLanguageCode: language,
+						Text: item.name
+					}).promise()).TranslatedText;
+				}
 				return item;
 			})));
 			callback(null, response);
