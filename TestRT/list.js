@@ -12,6 +12,7 @@ exports.handler = function (event, context, callback) {
 		"body": "..."
 	};
 
+	//https://age9ifmt0a.execute-api.us-east-1.amazonaws.com/staging/list?type=VEG&lan=ar
 	let queryType = event.queryStringParameters.type;
 	let language = event.queryStringParameters.lan;
 
@@ -26,11 +27,15 @@ exports.handler = function (event, context, callback) {
 			response.body = JSON.stringify(await Promise.all(data.Items.map(async (item) => {
 				item.image = "https://s3.amazonaws.com/" + process.env["IMAGE_BUCKET"] + "/" + item.itemCode + ".jpg";
 				if (language) {
-					item.name = (await tl.translateText({
-						SourceLanguageCode: "en",
-						TargetLanguageCode: language,
-						Text: item.name
-					}).promise()).TranslatedText;
+					try {
+						item.name = (await tl.translateText({
+							SourceLanguageCode: "en",
+							TargetLanguageCode: language,
+							Text: item.name
+						}).promise()).TranslatedText;
+					} catch (e) {
+						//fail silently
+					}
 				}
 				return item;
 			})));
