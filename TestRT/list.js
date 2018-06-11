@@ -1,4 +1,5 @@
 let AWS = require('aws-sdk');
+const ddb = new AWS.DynamoDB.DocumentClient();
 exports.handler = function (event, context, callback) {
 
 	let response = {
@@ -12,5 +13,20 @@ exports.handler = function (event, context, callback) {
 
 	let queryType = event.queryStringParameters.type;
 
-	callback(null, queryType);
+
+	ddb.scan({
+		TableName: 'TestRT',
+		ExpressionAttributeValues: {
+			':queryType': queryType
+		},
+		FilterExpression: 'itemType = :queryType'
+	}, function (err, data) {
+		if (data.Items) {
+			callback(err, data.Items);
+		} else {
+			callback(err, null);
+		}
+	});
+
+
 }

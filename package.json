@@ -2,6 +2,7 @@
   "name": "TestRT",
   "version": "1.0.0",
   "dependencies": {
-    "aws-sdk": "2.176.0"
+    "aws-sdk": "2.176.0",
+    "validate.js": "0.12.0"
   }
 }
